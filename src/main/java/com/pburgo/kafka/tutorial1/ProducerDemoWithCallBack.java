@@ -30,8 +30,9 @@ public class ProducerDemoWithCallBack {
             public void onCompletion(RecordMetadata metadata, Exception e) {
                 if (e!= null){
                     logger.info("Received new metadata:" +
-                            "Topic: " + metadata.topic() + System.lineSeparator()
-                            "Partition: " + metadata.partition() + System.lineSeparator() + );
+                            "Topic--> " + metadata.topic() + System.lineSeparator() +
+                            "Partition--> " + metadata.partition() + System.lineSeparator() +
+                            "Offsert--> " + metadata.offset());
                 }
             }
         });
