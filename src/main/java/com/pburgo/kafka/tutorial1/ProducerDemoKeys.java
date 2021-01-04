@@ -1,19 +1,22 @@
 package com.pburgo.kafka.tutorial1;
 
-import org.apache.kafka.clients.producer.*;
+import org.apache.kafka.clients.producer.KafkaProducer;
+import org.apache.kafka.clients.producer.ProducerConfig;
+import org.apache.kafka.clients.producer.ProducerRecord;
 import org.apache.kafka.common.serialization.StringSerializer;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.Properties;
+import java.util.concurrent.ExecutionException;
 
-public class ProducerDemoWithCallBack {
+public class ProducerDemoKeys {
 
     public static final String BOOTSTRAP_SERVERS = "127.0.0.1:9092";
 
 
-    public static void main(String[] args) {
-        Logger logger = LoggerFactory.getLogger(ProducerDemoWithCallBack.class);
+    public static void main(String[] args) throws ExecutionException, InterruptedException {
+        Logger logger = LoggerFactory.getLogger(ProducerDemoKeys.class);
 
         // Create Properties
         Properties properties = new Properties();
@@ -25,13 +28,19 @@ public class ProducerDemoWithCallBack {
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
         //Create producer record
-        for (int i = 20; i < 30; i++) {
-            String message  = "Hello from java N--" + i;
-            ProducerRecord<String, String> record = new ProducerRecord<>("test_topic",message);
+        for (int i = 0; i < 10; i++) {
+
+
+            String topic = "first_topic";
+            String value  = "Hello from java N--" + i;
+            String key = "id_" + i;
+            ProducerRecord<String, String> record = new ProducerRecord<>(topic,key,value);
+
             producer.send(record, (metadata, e) -> {
                 if (e == null) {
                     logger.info("Received new metadata:" +
-                            "Message--> " + message + "\n" +
+                            "Message--> " + value + "\n" +
+                            "Key--> " + key + "\n" +
                             "Topic--> " + metadata.topic() + System.lineSeparator() +
                             "Partition--> " + metadata.partition() + System.lineSeparator() +
                             "Offset--> " + metadata.offset() + "\n" +
@@ -39,7 +48,7 @@ public class ProducerDemoWithCallBack {
                 } else {
                     logger.error("Error while producing", e);
                 }
-            });
+            }).get();
         }
         producer.flush();
         producer.close();
