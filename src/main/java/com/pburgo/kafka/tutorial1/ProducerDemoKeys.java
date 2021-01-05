@@ -28,7 +28,7 @@ public class ProducerDemoKeys {
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
         //Create producer record
-        int bound = 400;
+        int bound = 500;
         for (int i = bound; i < bound + 10; i++) {
 
 
