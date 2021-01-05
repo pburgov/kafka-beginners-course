@@ -28,23 +28,20 @@ public class ProducerDemoKeys {
         KafkaProducer<String, String> producer = new KafkaProducer<>(properties);
 
         //Create producer record
-        for (int i = 0; i < 10; i++) {
+        int bound = 400;
+        for (int i = bound; i < bound + 10; i++) {
 
 
             String topic = "first_topic";
-            String value  = "Hello from java N--" + i;
+            String value  = "Hello--" + i;
             String key = "id_" + i;
             ProducerRecord<String, String> record = new ProducerRecord<>(topic,key,value);
 
             producer.send(record, (metadata, e) -> {
                 if (e == null) {
-                    logger.info("Received new metadata:" +
-                            "Message--> " + value + "\n" +
-                            "Key--> " + key + "\n" +
-                            "Topic--> " + metadata.topic() + System.lineSeparator() +
-                            "Partition--> " + metadata.partition() + System.lineSeparator() +
-                            "Offset--> " + metadata.offset() + "\n" +
-                            "TimeStamp--> " + metadata.timestamp());
+                    logger.info(String.format("Producer ---- Key--> %s Message--> %s Topic--> %s Partition--> " +
+                            "%d Offset--> [%d] TimeStamp--> [%d]", key ,value, metadata.topic(), metadata.partition(),
+                            metadata.offset(), metadata.timestamp()));
                 } else {
                     logger.error("Error while producing", e);
                 }
